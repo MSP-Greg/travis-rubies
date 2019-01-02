@@ -118,6 +118,7 @@ function install_autoconf() {
   tar xvf autoconf-latest.tar.gz
   pushd autoconf-*
   ./configure
+  make up
   make && sudo make install
   popd
   popd
@@ -215,9 +216,6 @@ ruby-1.*)
     announce rvm install $RUBY --verify-downloads 1 $MOVABLE_FLAG --disable-install-doc
   fi;;
 ruby-*)
-  if [[ $RUBY = *head* ]]; then
-    EXTRA_FLAGS="--rubygems 2.7.7 --force"
-  fi
   announce rvm install $RUBY $EXTRA_FLAGS --verify-downloads 1 $MOVABLE_FLAG --disable-install-doc -C --without-tcl,--without-tk,--without-gmp
   ;;
 jruby-head)
@@ -250,6 +248,9 @@ if [[ $RUBY != jruby* ]]; then
     echo "source 'https://rubygems.org'; gem 'sinatra'" > Gemfile
     announce travis_retry rvm $RUBY do gem install ffi
     announce travis_retry rvm $RUBY do gem uninstall -x ffi
+    echo ""
+    echo "Run Info"
+    announce travis_retry rvm $RUBY do ruby travis_info.rb
   fi
   fold_end check.2
 fi
