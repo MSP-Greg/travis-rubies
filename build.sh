@@ -118,8 +118,7 @@ function install_autoconf() {
   tar xvf autoconf-latest.tar.gz
   pushd autoconf-*
   ./configure
-  make up
-  make && sudo make install
+  make update-gems && make && sudo make install
   popd
   popd
 }
@@ -233,6 +232,7 @@ fold_start check.1 "make sure bundler works"
 if [ -n "${SKIP_CHECK}" ]; then
   echo '$SKIP_CHECK is set, skipping bundler check'
 else
+  
   echo "source 'https://rubygems.org'; gem 'sinatra'" > Gemfile
   announce travis_retry rvm $RUBY do gem install bundler
   announce travis_retry rvm $RUBY do bundle install
@@ -245,6 +245,7 @@ if [[ $RUBY != jruby* ]]; then
   if [ -n "${SKIP_CHECK}" ]; then
     echo '$SKIP_CHECK is set, skipping ffi check'
   else
+    announce travis_retry rvm $RUBY do ./travis_info.rb
     echo "source 'https://rubygems.org'; gem 'sinatra'" > Gemfile
     announce travis_retry rvm $RUBY do gem install ffi
     announce travis_retry rvm $RUBY do gem uninstall -x ffi
