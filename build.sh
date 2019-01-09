@@ -118,7 +118,7 @@ function install_autoconf() {
   tar xvf autoconf-latest.tar.gz
   pushd autoconf-*
   ./configure
-  make update-gems && make && sudo make install
+  make update-gems && make extract-gems && make && sudo make install
   popd
   popd
 }
@@ -223,6 +223,14 @@ jruby-head)
 *)      announce rvm install $RUBY --verify-downloads 1;;
 esac
 
+# below is bundled gem list as of 2019-01
+# https://github.com/ruby/ruby/blob/trunk/gems/bundled_gems
+if [[ $RUBY = *head* ]]; then
+  rvm $RUBY do gem install did_you_mean minitest net-telnet   -N --conservative
+  rvm $RUBY do gem install power_assert rake test-unit xmlrpc -N --conservative
+fi
+announce rvm $RUBY do ruby ./travis_info.rb
+
 announce rvm prepare $RUBY
 fold_end build
 
@@ -232,7 +240,6 @@ fold_start check.1 "make sure bundler works"
 if [ -n "${SKIP_CHECK}" ]; then
   echo '$SKIP_CHECK is set, skipping bundler check'
 else
-  
   echo "source 'https://rubygems.org'; gem 'sinatra'" > Gemfile
   announce travis_retry rvm $RUBY do gem install bundler
   announce travis_retry rvm $RUBY do bundle install
@@ -245,7 +252,6 @@ if [[ $RUBY != jruby* ]]; then
   if [ -n "${SKIP_CHECK}" ]; then
     echo '$SKIP_CHECK is set, skipping ffi check'
   else
-    announce travis_retry rvm $RUBY do ./travis_info.rb
     echo "source 'https://rubygems.org'; gem 'sinatra'" > Gemfile
     announce travis_retry rvm $RUBY do gem install ffi
     announce travis_retry rvm $RUBY do gem uninstall -x ffi

@@ -16,12 +16,6 @@ module VersInfo
   class << self
 
     def run
-      # Give AV build a title that means something
-#      if /trunk/ =~ RUBY_DESCRIPTION && Dir.exist?('C:/Users/appveyor') && Dir.exist?('C:/Program Files/AppVeyor/BuildAgent')
-#        title = "#{Time.now.utc.strftime('%F %R UTC')}   #{RUBY_DESCRIPTION[/\([^\)]+\)/]}"
-#        `appveyor UpdateBuild -Message \"#{title}\"`
-#      end
-
       highlight " #{Time.now.getutc}  Travis Ruby #{RUBY_VERSION}".rjust(100, @@dash)
       puts RUBY_DESCRIPTION
       puts
